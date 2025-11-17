@@ -27,3 +27,4 @@ requirement: |
   - JSON must properly escape quotes, backslashes, etc. inside JSON value fields; outside <output> tag, no need to escape newlines
   - <thought> describes your reasoning process and which guidelines were violated
 order: "business,requirement"
+

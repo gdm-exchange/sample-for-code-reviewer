@@ -7,7 +7,6 @@ from logger import init_logger
 # Initialize AWS services clients
 dynamodb 				= boto3.resource("dynamodb")
 sqs_client 				= boto3.client("sqs")
-BASE_RULES_TEXT			= os.getenv('BASE_RULES', '')
 BASE_RULES_DIRNAME 		= '.baseCodeReviewRule'
 _base_rules_cache		= None
 
@@ -18,6 +17,21 @@ def match_branch(pattern, branch):
 	return pattern == branch
 
 def load_base_rules():
+	"""
+    加载基础评审规则
+    
+    加载顺序：
+    1. 从本地目录 .baseCodeReviewRule/*.yaml 加载（优先级高）
+    2. 从环境变量 BASE_RULES 加载（优先级低）
+    
+    支持格式：
+    - YAML 多文档格式（--- 分隔）
+    - 单个规则对象
+    - 规则数组
+    
+    返回:
+        list: 基础规则列表，已缓存，后续调用直接返回缓存结果
+    """
 	global _base_rules_cache
 	if _base_rules_cache is not None:
 		return _base_rules_cache
