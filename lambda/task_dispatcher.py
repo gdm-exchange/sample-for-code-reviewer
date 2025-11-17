@@ -18,20 +18,23 @@ def match_branch(pattern, branch):
 
 def load_base_rules():
 	"""
-    加载基础评审规则
-    
-    加载顺序：
-    1. 从本地目录 .baseCodeReviewRule/*.yaml 加载（优先级高）
-    2. 从环境变量 BASE_RULES 加载（优先级低）
-    
-    支持格式：
-    - YAML 多文档格式（--- 分隔）
-    - 单个规则对象
-    - 规则数组
-    
-    返回:
-        list: 基础规则列表，已缓存，后续调用直接返回缓存结果
-    """
+	加载基础评审规则
+	
+	从本地目录加载规则文件，支持两个查找位置：
+	1. lambda/.baseCodeReviewRule/*.yaml（Lambda函数目录）
+	2. .baseCodeReviewRule/*.yaml（项目根目录）
+	
+	支持格式：
+	- YAML 多文档格式（--- 分隔）
+	- 单个规则对象
+	- 规则数组
+	
+	文件扩展名：
+	- 支持 .yaml 和 .yml
+	
+	返回:
+		list: 基础规则列表，已缓存，后续调用直接返回缓存结果
+	"""
 	global _base_rules_cache
 	if _base_rules_cache is not None:
 		return _base_rules_cache
@@ -39,6 +42,7 @@ def load_base_rules():
 	rules = []
 
 	def _append_from_text(text, source):
+		"""从文本内容解析并追加规则"""
 		if not text:
 			return
 		try:
@@ -54,31 +58,40 @@ def load_base_rules():
 		except Exception as ex:
 			log.error('Fail to parse base rule.', extra=dict(source=source, exception=str(ex)))
 
-	# 1. 优先读取本地目录
+	# 从本地目录读取规则文件
 	current_dir = os.path.dirname(os.path.abspath(__file__))
 	candidates = [
-		os.path.join(current_dir, BASE_RULES_DIRNAME),
-		os.path.join(os.path.dirname(current_dir), BASE_RULES_DIRNAME),
+		os.path.join(current_dir, BASE_RULES_DIRNAME),  # lambda/.baseCodeReviewRule
+		os.path.join(os.path.dirname(current_dir), BASE_RULES_DIRNAME),  # .baseCodeReviewRule
 	]
+	
 	seen_paths = set()
 	for directory in candidates:
-		if directory in seen_paths:
+		# 避免重复处理相同路径（虽然当前逻辑不会出现，但保留以增强健壮性）
+		normalized_path = os.path.normpath(directory)
+		if normalized_path in seen_paths:
 			continue
-		seen_paths.add(directory)
+		seen_paths.add(normalized_path)
+		
 		if not os.path.isdir(directory):
+			log.debug(f'Base rules directory not found: {directory}')
 			continue
-		for path in sorted(glob(os.path.join(directory, '*.yaml'))):
+		
+		# 支持 .yaml 和 .yml 两种扩展名
+		yaml_files = []
+		for pattern in ['*.yaml', '*.yml']:
+			yaml_files.extend(glob(os.path.join(directory, pattern)))
+		
+		for path in sorted(yaml_files):
 			try:
 				with open(path, 'r', encoding='utf-8') as f:
 					_append_from_text(f.read(), f'file:{path}')
+				log.info(f'Successfully loaded base rule file: {path}')
 			except Exception as ex:
 				log.error('Fail to load base rule file.', extra=dict(file=path, exception=str(ex)))
 
-	# 2. 读取环境变量
-	if BASE_RULES_TEXT:
-		_append_from_text(BASE_RULES_TEXT, 'environment:BASE_RULES')
-
 	_base_rules_cache = rules
+	log.info(f'Loaded {len(rules)} base rules from local files.')
 	return _base_rules_cache
 
 def send_message(data):
