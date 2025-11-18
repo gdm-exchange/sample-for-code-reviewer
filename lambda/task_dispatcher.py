@@ -7,7 +7,7 @@ from logger import init_logger
 # Initialize AWS services clients
 dynamodb 				= boto3.resource("dynamodb")
 sqs_client 				= boto3.client("sqs")
-BASE_RULES_DIRNAME 		= '.baseCodeReviewRule'
+BASE_RULES_DIRNAME 		= 'baseCodeReviewRule'
 _base_rules_cache		= None
 
 init_logger()
@@ -21,8 +21,8 @@ def load_base_rules():
 	加载基础评审规则
 	
 	从本地目录加载规则文件，支持两个查找位置：
-	1. lambda/.baseCodeReviewRule/*.yaml（Lambda函数目录）
-	2. .baseCodeReviewRule/*.yaml（项目根目录）
+	1. lambda/baseCodeReviewRule/*.yaml（Lambda函数目录）
+	2. baseCodeReviewRule/*.yaml（项目根目录）
 	
 	支持格式：
 	- YAML 多文档格式（--- 分隔）
@@ -65,6 +65,9 @@ def load_base_rules():
 		os.path.join(os.path.dirname(current_dir), BASE_RULES_DIRNAME),  # baseCodeReviewRule
 	]
 	
+	log.debug(f'Searching for base rules in directories: {candidates}')
+	log.debug(f'Current directory: {current_dir}')
+	
 	seen_paths = set()
 	for directory in candidates:
 		# 避免重复处理相同路径（虽然当前逻辑不会出现，但保留以增强健壮性）
@@ -76,6 +79,8 @@ def load_base_rules():
 		if not os.path.isdir(directory):
 			log.debug(f'Base rules directory not found: {directory}')
 			continue
+		
+		log.info(f'Found base rules directory: {directory}')
 		
 		# 支持 .yaml 和 .yml 两种扩展名
 		yaml_files = []
