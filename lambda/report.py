@@ -153,7 +153,7 @@ def generate_report(record, event, context):
 	log.info(f'Report is created to s3://{bucket_name}/{key}')
 	
 	# 为index.html产生Presign URL
-	presigned_url = s3.Object(bucket_name, key).meta.client.generate_presigned_url('get_object', Params={'Bucket': bucket_name, 'Key': key}, ExpiresIn=3600 * 24 * 5)
+	presigned_url = s3.Object(bucket_name, key).meta.client.generate_presigned_url('get_object', Params={'Bucket': bucket_name, 'Key': key}, ExpiresIn=3600 * 24 * 30)
 	log.info(f'Report URL: {presigned_url}')
 
 	return dict(title=title, subtitle=subtitle, url=presigned_url, s3key=key, data=all_data)

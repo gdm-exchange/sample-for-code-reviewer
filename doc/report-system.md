@@ -20,7 +20,7 @@ Code Reviewer的报告系统负责收集所有评审任务的结果，生成统�
 
 生成的HTML报告存储在S3中，路径结构为`report/{project_name}/{commit_id}/index.html`。项目名称会被清理，只保留字母数字和下划线。文件上传时设置正确的Content-Type为`text/html`。
 
-报告通过S3预签名URL提供访问，有效期为5天。生成预签名URL后，系统会更新DynamoDB Request表，记录报告的S3路径、访问URL和完成状态。用户可以通过API `/result`接口查询报告状态和获取访问链接。
+报告通过S3预签名URL提供访问，有效期为30天。生成预签名URL后，系统会更新DynamoDB Request表，记录报告的S3路径、访问URL和完成状态。用户可以通过API `/result`接口查询报告状态和获取访问链接。
 
 ## 通知与故障处理
 
