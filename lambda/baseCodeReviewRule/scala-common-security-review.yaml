@@ -3,7 +3,7 @@ name: "Common - Security Review"
 mode: "diff"
 branch: "main"
 event: "merge"
-target: "**/*.java,**/*.scala,**/*.conf"
+target: "**/*.java,**/*.scala,**/*.conf,**/*.properties,**/*.yaml"
 model: "claude3.5-sonnet"
 
 system: |
