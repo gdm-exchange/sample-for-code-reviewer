@@ -2,7 +2,7 @@ rules:
   - name: General Bug Detection
     mode: diff
     branch: dev
-    target: '**.py, **.java, **.js'
+    target: '**.py, **.java, **.js, **.scala'
     model: claude3.5-sonnet
     event: push
     system: 你是一位资深的代码评审员，擅长各种代码代码的编写
@@ -103,7 +103,7 @@ rules:
   - name: General Security Issue
     mode: diff
     branch: dev
-    target: '**.py, **.java, **.js'
+    target: '**.py, **.java, **.js, **.scala'
     model: claude3.5-sonnet
     event: push
     system: 你是一位资深的代码评审员，擅长各种代码代码的编写
@@ -206,7 +206,7 @@ rules:
   - name: Code Simplification
     mode: diff
     branch: dev
-    target: '**.py, **.java, **.js'
+    target: '**.py, **.java, **.js, **.scala'
     model: claude3.5-sonnet
     event: push
     system: 你是一位资深的代码评审员，擅长各种代码代码的编写

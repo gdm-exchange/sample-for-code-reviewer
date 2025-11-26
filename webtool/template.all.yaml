@@ -2,7 +2,7 @@ rules:
   - name: DynamoDB Issue
     mode: all
     branch: dev
-    target: '**.py, **.js, **.java'
+    target: '**.py, **.js, **.java, **.scala'
     model: claude3.5-sonnet
     event: push
     system: 你是一位资深的代码评审员，擅长各种代码代码的编写，也擅长AWS的技术。
