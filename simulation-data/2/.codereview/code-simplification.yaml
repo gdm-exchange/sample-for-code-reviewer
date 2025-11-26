@@ -1,7 +1,7 @@
 name: Code Simplification
 mode: single
 branch: dev
-target: '**.py, **.java, **.js'
+target: '**.py, **.java, **.js, **.scala'
 model: claude3.5-sonnet
 event: push
 system: |-
