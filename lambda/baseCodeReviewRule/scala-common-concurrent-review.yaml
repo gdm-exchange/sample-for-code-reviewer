@@ -4,7 +4,7 @@ mode: "diff"
 branch: "main"
 event: "merge"
 target: "**/*.java,**/*.scala,**/*.conf,**/*.properties,**/*.yaml"
-model: "claude3.5-sonnet"
+model: "claude4.5-sonnet"
 
 system: |
 business: |
@@ -12,7 +12,7 @@ business: |
   Review scope: diffs from this commit.
 requirement: |
   Tasks:
-  - Evaluate whether the code introduces concurrency issues or fails to handle high-concurrency scenarios gracefully (e.g., race conditions, shared mutable state, lack of synchronization, blocking operations). If no issues are found, output []
+  - Evaluate whether the code introduces concurrency issues or fails to handle high-concurrency scenarios gracefully (e.g., race conditions, shared mutable state, lack of synchronization, blocking operations), find as many as possible but don't force findings; If no issues are found, output []
   
   Output format requirements (strictly follow):
   - Output only two tags: <output> and <thought>

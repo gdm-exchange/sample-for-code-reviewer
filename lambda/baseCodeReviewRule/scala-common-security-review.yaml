@@ -4,7 +4,7 @@ mode: "diff"
 branch: "main"
 event: "merge"
 target: "**/*.java,**/*.scala,**/*.conf,**/*.properties,**/*.yaml"
-model: "claude3.5-sonnet"
+model: "claude4.5-sonnet"
 
 system: |
 business: |
@@ -12,7 +12,7 @@ business: |
   Review scope: diffs from this commit.
 requirement: |
   Tasks:
-  - Check if there are any security vulnerabilities in the code (e.g., injection risks, unsafe deserialization, insecure config/secrets, insufficient authz/authn, logging leakage). If no issues found, output [].
+  - Check if there are any security vulnerabilities in the code (e.g., injection risks, unsafe deserialization, insecure config/secrets, insufficient authz/authn, logging leakage), find as many as possible but don't force findings; If no issues found, output [].
 
   Output format requirements (strictly follow):
   - Output only two tags: <output> and <thought>
