@@ -1211,9 +1211,18 @@ def build_pr_comment(report_url, report_data):
         sections.append("✅ 未发现需要向团队报告的问题。")
     else:
         for entry in report_data:
+            content = entry.get('content')
+            # Skip empty results to avoid placeholder lines
+            if content is None:
+                continue
+            if isinstance(content, str) and not content.strip():
+                continue
+            if isinstance(content, list) and len(content) == 0:
+                continue
+
             rule_name = entry.get('rule') or '未命名规则'
             sections.append(f"### {rule_name}")
-            sections.append(_format_issue_content(entry.get('content')))
+            sections.append(_format_issue_content(content))
             sections.append("")
 
     sections.append("---")

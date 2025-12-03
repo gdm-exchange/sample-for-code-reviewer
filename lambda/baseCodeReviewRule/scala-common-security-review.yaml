@@ -12,7 +12,11 @@ business: |
   Review scope: diffs from this commit.
 requirement: |
   Tasks:
-  - Check if there are any security vulnerabilities in the code (e.g., injection risks, unsafe deserialization, insecure config/secrets, insufficient authz/authn, logging leakage), find as many as possible but don't force findings; If no issues found, output [].
+  - Report only high-confidence security bugs visible in the diff. A security bug = injection, unsafe deserialization/serialization, missing/weak authn/authz, secrets exposure, insecure config/transport/crypto, logging leakage, or config that provably breaks security based on code in this change.
+  - Do NOT flag style/naming/renaming suggestions or speculative risks; treat string/config changes as intentional unless the diff shows they conflict with referenced values/code.
+  - Treat model IDs and config strings as intentional; do NOT suggest renaming model IDs unless this diff introduces a conflicting value elsewhere in the repo.
+  - Do not rely on external/canonical naming; only flag if the change breaks an in-repo reference.
+  - If evidence is missing or uncertain, return [].
 
   Output format requirements (strictly follow):
   - Output only two tags: <output> and <thought>
