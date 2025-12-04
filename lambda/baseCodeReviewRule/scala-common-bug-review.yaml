@@ -12,11 +12,13 @@ business: |
   Review scope: diffs from this commit.
 requirement: |
   Tasks:
-  - Report only high-confidence bugs visible in the diff. A bug = will cause compile/runtime error, incorrect behavior, data loss, or a config/runtime failure that is provable from this change.
-  - Do NOT flag style/naming/renaming suggestions or speculative issues; treat string/config changes as intentional unless the diff shows they conflict with referenced values/code.
-  - Treat model IDs and config strings as intentional; do NOT suggest renaming model IDs unless this diff introduces a conflicting value elsewhere in the repo.
-  - Do not rely on external/canonical naming; only flag if the change breaks an in-repo reference.
-  - If evidence is missing or uncertain, return [].
+  - Report only high-confidence bugs visible in the diff. A bug = will cause compile/runtime error, incorrect behavior, data loss, or a config/runtime failure provable from this change.
+  - Report only high-confidence security bugs: injection, unsafe deser/ser, missing/weak authn/authz, secrets exposure, insecure config/transport/crypto, logging leakage, or config that provably breaks security based on this change.
+  - Report only high-confidence concurrency bugs: races on shared state, missing synchronization, unsafe publication/visibility, deadlocks, blocking calls in hot/async paths, misuse of futures/promises/threads that changes correctness.
+  - Do NOT flag style/naming/renaming/speculative issues; treat string/config changes as intentional unless the diff shows conflict with referenced values/code.
+  - Treat model IDs/config strings as intentional; do NOT suggest renaming model IDs unless this diff introduces a conflicting value elsewhere in the repo. Do not rely on external naming standards; only flag if the change breaks an in-repo reference.
+  - Do NOT output placeholder/empty findings. Only emit items with non-empty title/content/filepath and concrete evidence from the diff; otherwise return [].
+  - Avoid duplicate findings already covered above; if overlapping, report once.
 
   Output format requirements (strictly follow):
   - Output only two tags: <output> and <thought>
@@ -31,4 +33,3 @@ requirement: |
   - JSON must properly escape quotes, backslashes, etc. inside JSON value fields; outside <output> tag, no need to escape newlines
   - <thought> describes your reasoning process and which guidelines were violated
 order: "business,requirement"
-
