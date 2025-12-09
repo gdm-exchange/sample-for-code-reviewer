@@ -230,6 +230,13 @@
   对于 `BedrockAccessKey`, `BedrockSecretKey`, `BedrockRegion` 三个参数，可在Lambda函数 `{project_name}-task-executor` 的环境变量中配置。
 
   对于 `SMTPServer`, `SMTPPort`, `SMTPUsername`, `SMTPPassword`, `ReportSender`, `ReportReceiver` 几个参数，可在Lambda函数 `{project_name}-report-receiver` 的环境变量中配置。
+
+  对于 `ENABLE_EMAIL_NOTIFICATION` 参数，可在Lambda函数 `{project_name}-report-receiver` 的环境变量中配置，用于控制是否发送邮件通知：
+  
+  - 设置为 `true`、`1` 或 `yes`：启用邮件通知（webhook触发时会发送邮件，webtool触发时不发送）
+  - 设置为其他值或未设置：禁用邮件通知
+  
+  修改方法：在AWS Lambda控制台中，找到 `{project_name}-report-receiver` 函数，进入"配置" → "环境变量"，添加或修改 `ENABLE_EMAIL_NOTIFICATION` 环境变量。修改后无需重启，下次Lambda调用时会自动使用新值。
 - **向SQS发送了什么数据？**
 
   在CloudWatch中查询 `/aws/lambda/{project_name}-lambda-logs`日志组，过滤关键字 `"Prepare to send message to SQS"`可以找到编码前的SQS消息，过滤关键字 `"Succeed to send message to SQS"`可以找到SQS实际消息（Base64编码）。

@@ -70,6 +70,11 @@ export class CodeReviewerStack extends cdk.Stack {
 			default: '',
 			description: '[Optional] Report receiver, an email address. If provided, it will be used to receive Code Review Report.',
 		});
+		const enable_email_notification = new cdk.CfnParameter(this, 'EnableEmailNotification', {
+			type: 'String',
+			default: '',
+			description: '[Optional] Enable email notification. Set to "true" to enable, "false" to disable. If not set, uses default behavior (webhook only).',
+		});
 
 		const bedrock_access_key = new cdk.CfnParameter(this, 'BedrockAccessKey', {
 			type: 'String',
@@ -121,7 +126,7 @@ export class CodeReviewerStack extends cdk.Stack {
 					},
 					{
 						Label: { default: 'Email Configuration (Optional)' },
-						Parameters: ['SMTPServer', 'SMTPPort', 'SMTPUsername', 'SMTPPassword', 'ReportSender', 'ReportReceiver']
+						Parameters: ['SMTPServer', 'SMTPPort', 'SMTPUsername', 'SMTPPassword', 'ReportSender', 'ReportReceiver', 'EnableEmailNotification']
 					}
 				]
 			}
@@ -189,6 +194,7 @@ export class CodeReviewerStack extends cdk.Stack {
 		api.report_receiver.addEnvironment('SMTP_PASSWORD', smtp_password.valueAsString)
 		api.report_receiver.addEnvironment('REPORT_SENDER', report_sender.valueAsString)
 		api.report_receiver.addEnvironment('REPORT_RECEIVER', report_receiver.valueAsString)
+		api.report_receiver.addEnvironment('ENABLE_EMAIL_NOTIFICATION', enable_email_notification.valueAsString)
 
 		/* 触发Lambda */
 		api.task_executor.addEventSource(new SqsEventSource(sqs.task_queue))

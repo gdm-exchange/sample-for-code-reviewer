@@ -142,6 +142,9 @@ def lambda_handler(event, context):
     
     log.info(event, extra=dict(label='event'))
 
+    # 检查邮件通知开关：只有设置为 'true'/'1'/'yes' 时才发送邮件
+    enable_email = os.getenv('ENABLE_EMAIL_NOTIFICATION', '').lower() in ['true', '1', 'yes']
+
     for record in event.get('Records'):
         sns_message = record.get('Sns')
         if sns_message:
@@ -156,11 +159,12 @@ def lambda_handler(event, context):
             if invoker == 'webtool':
                 pass # Do nothing
             else:
-                # 发送邮件
-                send_mail(message)
+                if enable_email:
+                    # 发送邮件
+                    send_mail(message)
 
-                # 触发飞书/微信/钉钉的WebHook
-                # TODO Write your code here
+                    # 触发飞书/微信/钉钉的WebHook
+                    # TODO Write your code here
 
-                # 其他操作
-                # TODO Write your code here
+                    # 其他操作
+                    # TODO Write your code here
