@@ -1,5 +1,5 @@
 # .codereview/scala-bug-review.yaml
-name: "Common - Bug Review"
+name: "Common - Bug Review (main)"
 mode: "diff"
 branch: "main"
 event: "merge"
