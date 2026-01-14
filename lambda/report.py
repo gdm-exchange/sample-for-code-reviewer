@@ -84,15 +84,15 @@ def generate_report_and_notify(record, event, context):
 		log.error('Fail to update request record report.', extra=dict(exception=str(ex)))
 		return
 
-	# 发送SNS消息
+	# 发送SNS消息（不包含完整data，避免超过SNS 256KB限制，完整数据可通过report_url获取）
 	try:
 		sns_topic_arn = os.getenv('SNS_TOPIC_ARN')
-		message = dict(title=result.get('title'), subtitle=result.get('subtitle'), report_url=result.get('url'), data=result.get('data'), context=context)
+		message = dict(title=result.get('title'), subtitle=result.get('subtitle'), report_url=result.get('url'), data=[], context=context)
 		response = sns.Topic(sns_topic_arn).publish(Message=base.dump_json(message), Subject=result.get('title', 'none'))
 		log.info('SNS message is sent: {}'.format(response['MessageId']))
 	except Exception as ex:
 		log.error('Fail to send SNS message.', extra=dict(exception=str(ex)))
-		return
+		# 不 return，继续执行后续代码（如回写 GitHub PR）
 
 	# 可选：回写到 GitHub PR
 	try:
